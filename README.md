@@ -18,7 +18,7 @@ ghb は Github リポジトリを操作する CLI です。
 
 ## Usage
 
-### `git add ...`
+### git add ...
 
 #### 新規リポジトリ作成
 
@@ -37,7 +37,7 @@ $ ghb add issue test-repo -l bug
 ```
 
 * 引数として Issue を作成したいリポジトリ名を指定します。
-* フラグオプションで Issue に
+* フラグオプションで Issue にラベルを追加します。
 * リポジトリの作成に成功すると、標準出力に Issue 番号を表示します。
 
 ### Option
