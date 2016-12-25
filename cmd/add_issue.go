@@ -122,9 +122,7 @@ func runIssue(cmd *cobra.Command, args []string) error {
 	tc := oauth2.NewClient(oauth2.NoContext, ts)
 
 	cl := github.NewClient(tc)
-	// FIXME
-	// リポジトリオーナー名をハードコードしている。
-	addedIssue, _, err := cl.Issues.Create("yuta-masano", repoName, newIssue)
+	addedIssue, _, err := cl.Issues.Create(cfg.Owner, repoName, newIssue)
 	if err != nil {
 		return err
 	}
