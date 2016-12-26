@@ -43,44 +43,38 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+	var err error
 	// Read config.yml
 	viper.SetConfigFile(cfgPath)
-	if err := viper.ReadInConfig(); err != nil {
+	if err = viper.ReadInConfig(); err != nil {
 		fmt.Fprintf(os.Stderr, "failed in reading config file: %s\n", err)
 		os.Exit(-1)
 	}
-	if err := viper.Unmarshal(&cfg); err != nil {
+	if err = viper.Unmarshal(&cfg); err != nil {
 		fmt.Fprintf(os.Stderr, "failed in setting config parameters: %s\n", err)
 		os.Exit(-1)
 	}
-	for _, param := range []string{"Apikey"} {
-		if !viper.IsSet(param) {
-			fmt.Fprintf(os.Stderr, "failed in reading config parameter: %s must be specified\n", param)
+	// for _, param := range []string{"Apikey"} {
+	// 	if !viper.IsSet(param) {
+	// 		fmt.Fprintf(os.Stderr, "failed in reading config parameter: %s must be specified\n", param)
+	// 		os.Exit(-1)
+	// 	}
+	// }
+
+	// Read .gitconfig
+	cfg.GitHubOwner, err = gitconfig.GithubUser()
+	if err != nil {
+		cfg.GitHubOwner, err = gitconfig.Username()
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "failed in setting repository owner: %s\n", err)
 			os.Exit(-1)
 		}
 	}
-
-	// Read .gitconfig
-	gitHubOwner := func() string {
-		var owner string
-		var e error
-		owner, e = gitconfig.GithubUser()
-		if e != nil {
-			owner, e = gitconfig.Username()
-			if e != nil {
-				fmt.Fprintf(os.Stderr, "failed in setting repository owner: %s\n", e)
-				os.Exit(-1)
-			}
-		}
-		return owner
-	}()
-	viper.Set("gitHubOwner", gitHubOwner)
-	gitHubToken, err := gitconfig.GithubToken()
+	cfg.GitHubToken, err = gitconfig.GithubToken()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed in setting GitHub Token: %s\n", err)
 		os.Exit(-1)
 	}
-	viper.Set("gitHubToken", gitHubToken)
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.

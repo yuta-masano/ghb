@@ -12,7 +12,6 @@ import (
 
 	"github.com/google/go-github/github"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 // issueCmd represents the issue command
@@ -120,11 +119,11 @@ func runIssue(cmd *cobra.Command, args []string) error {
 	}
 
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: viper.GetString("gitHubToken")})
+		&oauth2.Token{AccessToken: cfg.GitHubToken})
 	tc := oauth2.NewClient(oauth2.NoContext, ts)
 
 	cl := github.NewClient(tc)
-	addedIssue, _, err := cl.Issues.Create(viper.GetString("gitHubOwner"), repoName, newIssue)
+	addedIssue, _, err := cl.Issues.Create(cfg.GitHubOwner, repoName, newIssue)
 	if err != nil {
 		return err
 	}
