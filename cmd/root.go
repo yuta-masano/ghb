@@ -53,7 +53,7 @@ func initConfig() {
 	}
 	for _, param := range []string{"Apikey"} {
 		if !viper.IsSet(param) {
-			fmt.Fprintf(os.Stdout, "failed in reading config parameter: %s must be specified\n", param)
+			fmt.Fprintf(os.Stderr, "failed in reading config parameter: %s must be specified\n", param)
 			os.Exit(-1)
 		}
 	}
