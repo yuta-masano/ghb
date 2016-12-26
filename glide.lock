@@ -1,5 +1,5 @@
-hash: 94f322f52bbbd6c0ba7d8256949d50590794ea106a78bbd47cebc28b7b6a77e4
-updated: 2016-12-25T12:53:13.334160676+09:00
+hash: a296c5e4881df93f3016fdc4118daaca3750c6d0828886799cc48dd40a07e548
+updated: 2016-12-26T10:15:50.177393076+09:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: fd9ec7deca8bf46ecd2a795baaacf2b3a9be1197
@@ -50,6 +50,8 @@ imports:
   version: 5ccb023bc27df288a957c5e994cd44fd19619465
 - name: github.com/spf13/viper
   version: 651d9d916abc3c3d6a91a12549495caba5edffd2
+- name: github.com/tcnksm/go-gitconfig
+  version: d154598bacbf4501c095a309753c5d4af66caa81
 - name: golang.org/x/net
   version: 45e771701b814666a7eb299e6c7a57d0b1799e91
   subpackages:

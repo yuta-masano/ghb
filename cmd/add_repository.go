@@ -9,6 +9,7 @@ import (
 
 	"github.com/google/go-github/github"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 // repositoryCmd represents the repository command
@@ -49,8 +50,7 @@ func runRepository(cmd *cobra.Command, args []string) error {
 	}
 
 	ts := oauth2.StaticTokenSource(
-		&oauth2.Token{AccessToken: cfg.APIKey},
-	)
+		&oauth2.Token{AccessToken: viper.GetString("gitHubToken")})
 	tc := oauth2.NewClient(oauth2.NoContext, ts)
 
 	cl := github.NewClient(tc)

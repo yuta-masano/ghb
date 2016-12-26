@@ -8,6 +8,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/tcnksm/go-gitconfig"
 )
 
 const windows = "windows"
@@ -42,6 +43,7 @@ func init() {
 
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
+	// Read config.yml
 	viper.SetConfigFile(cfgPath)
 	if err := viper.ReadInConfig(); err != nil {
 		fmt.Fprintf(os.Stderr, "failed in reading config file: %s\n", err)
@@ -57,6 +59,28 @@ func initConfig() {
 			os.Exit(-1)
 		}
 	}
+
+	// Read .gitconfig
+	gitHubOwner := func() string {
+		var owner string
+		var e error
+		owner, e = gitconfig.GithubUser()
+		if e != nil {
+			owner, e = gitconfig.Username()
+			if e != nil {
+				fmt.Fprintf(os.Stderr, "failed in setting repository owner: %s\n", e)
+				os.Exit(-1)
+			}
+		}
+		return owner
+	}()
+	viper.Set("gitHubOwner", gitHubOwner)
+	gitHubToken, err := gitconfig.GithubToken()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "failed in setting GitHub Token: %s\n", err)
+		os.Exit(-1)
+	}
+	viper.Set("gitHubToken", gitHubToken)
 }
 
 // Execute adds all child commands to the root command sets flags appropriately.
