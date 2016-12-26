@@ -1,3 +1,5 @@
+SHELL := /bin/bash
+
 #===============================================================================
 #  release information
 #===============================================================================
@@ -44,7 +46,6 @@ GOMETALINTER_EXCLUDE_REGEX := gas
 #    `make [help]` shows tasks what you should execute.
 #    The other are helper targets.
 #===============================================================================
-SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
 # [Add a help target to a Makefile that will allow all targets to be self documenting]
@@ -72,10 +73,10 @@ deps-install: setup ## install vendor packages based on glide.lock or glide.yaml
 
 .PHONY: install
 install:
-	CGO_ENABLED=0 go install $(STATIC_FLAGS) -ldflags "$(LD_FLAGS)"
+	CGO_ENABLED=0 go install $(subst -a ,,$(STATIC_FLAGS)) -ldflags "$(LD_FLAGS)"
 
 .PHONY: lint
-lint: ## lint go sources and check whether only LICENSE file has copyright sentence
+lint: install ## lint go sources and check whether only LICENSE file has copyright sentence
 	glide list &>/dev/null || glide install
 	gometalinter $(GOMETALINTER_OPTS)                                                  \
 		$(if $(GOMETALINTER_EXCLUDE_REGEX), --exclude='$(GOMETALINTER_EXCLUDE_REGEX)') \
