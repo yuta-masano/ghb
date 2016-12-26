@@ -114,7 +114,9 @@ func runIssue(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	newIssue.Labels = &labels
+	if len(labels) > 0 {
+		newIssue.Labels = &labels
+	}
 
 	ts := oauth2.StaticTokenSource(
 		&oauth2.Token{AccessToken: cfg.APIKey},
