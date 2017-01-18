@@ -20,7 +20,7 @@ var RootCmd = &cobra.Command{
 }
 
 func init() {
-	// cobra.OnInitialize() は cmd.Execute() の RootCmd.Execute() 内で
+	// cobra.OnInitialize() は root.go#cmd.Execute() の RootCmd.Execute() 内で
 	// 実行される。
 	// ただし、存在するサブコマンドがエラーを返さないように実行した場合しか
 	// 呼び出されない。
@@ -44,6 +44,7 @@ func init() {
 // initConfig reads in config file and ENV variables if set.
 func initConfig() {
 	var err error
+
 	// Read config.yml
 	viper.SetConfigFile(cfgPath)
 	if err = viper.ReadInConfig(); err != nil {
@@ -62,15 +63,15 @@ func initConfig() {
 	// }
 
 	// Read .gitconfig
-	cfg.GitHubOwner, err = gitconfig.GithubUser()
+	cfg.gitHubOwner, err = gitconfig.GithubUser()
 	if err != nil {
-		cfg.GitHubOwner, err = gitconfig.Username()
+		cfg.gitHubOwner, err = gitconfig.Username()
 		if err != nil {
 			fmt.Fprintf(os.Stderr, "failed in setting repository owner: %s\n", err)
 			os.Exit(-1)
 		}
 	}
-	cfg.GitHubToken, err = gitconfig.GithubToken()
+	cfg.gitHubToken, err = gitconfig.GithubToken()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "failed in setting GitHub Token: %s\n", err)
 		os.Exit(-1)

@@ -3,11 +3,11 @@ package cmd
 var cfgPath string
 
 type config struct {
-	Template string
-	Editor   string
+	Editor               string
+	IssueTemplateRelPath string
 
-	GitHubOwner string
-	GitHubToken string
+	gitHubOwner string
+	gitHubToken string
 }
 
 var cfg config
