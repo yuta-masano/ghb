@@ -13,11 +13,11 @@ PKG_DEST_DIR := $(RELEASE_DIR)/.pkg
 ALL_OS := darwin linux windows
 ALL_ARCH := 386 amd64
 
-LATEST_LOCAL_BRANCH := $(subst * ,,$(shell git branch --sort='-committerdate' |\
-	head --lines=1))
-NEW_TAG := $(shell echo "$(LATEST_LOCAL_BRANCH)"      |\
-	grep --only-matching -E '[0-9]+\.[0-9]+\.[0-9]+')
-
+LATEST_LOCAL_DEVEL_BRANCH := $(subst * ,,$(shell git branch --sort='-committerdate' \
+	| grep --invert-match master                                                    \
+	| head --lines=1))
+NEW_TAG := $(shell echo "$(LATEST_LOCAL_DEVEL_BRANCH)" \
+	| grep --only-matching -E '[0-9]+\.[0-9]+\.[0-9]+')
 
 #===============================================================================
 #  version information embedding
@@ -32,7 +32,6 @@ LD_FLAGS := -s -w -X '$(VERSION_PACKAGE).buildVersion=$(VERSION)' \
 	-X '$(VERSION_PACKAGE).buildRevision=$(BUILD_REVISION)'       \
 	-X '$(VERSION_PACKAGE).buildWith=$(BUILD_WITH)'               \
 	-extldflags -static
-
 
 #===============================================================================
 #  lint options
@@ -55,9 +54,9 @@ help: ## show help
 	@echo 'USAGE: make [target]'
 	@echo
 	@echo 'TARGETS:'
-	@grep -E '^[-_: a-zA-Z0-9]+##' $(MAKEFILE_LIST)  |\
-		sed -e 's/:[-_ a-zA-Z0-9]\+/:/'              |\
-		column -t -s ':#'
+	@grep -E '^[-_: a-zA-Z0-9]+##' $(MAKEFILE_LIST) \
+		| sed 's/:[-_ a-zA-Z0-9]\+/:/'              \
+		| column -t -s ':#'
 
 # install development tools
 .PHONY: setup
@@ -66,6 +65,7 @@ setup:
 	go get -v -u github.com/alecthomas/gometalinter
 	go get -v -u github.com/tcnksm/ghr
 	gometalinter --install
+	cp -a $(TOOL_DIR)/git_hooks/* .git/hooks/
 
 .PHONY: deps-install
 deps-install: setup ## install vendor packages based on glide.lock or glide.yaml
@@ -73,31 +73,31 @@ deps-install: setup ## install vendor packages based on glide.lock or glide.yaml
 
 .PHONY: install
 install:
+	go install vendor/...
 	CGO_ENABLED=0 go install $(subst -a ,,$(STATIC_FLAGS)) -ldflags "$(LD_FLAGS)"
 
 .PHONY: lint
 lint: install ## lint go sources and check whether only LICENSE file has copyright sentence
-	glide list &>/dev/null || glide install
 	gometalinter $(GOMETALINTER_OPTS)                                                  \
 		$(if $(GOMETALINTER_EXCLUDE_REGEX), --exclude='$(GOMETALINTER_EXCLUDE_REGEX)') \
 		$(shell glide novendor)
-	$(TOOL_DIR)/copyright-check.sh
+	$(TOOL_DIR)/copyright_check.sh
 
 .PHONY: push-release-tag
 push-release-tag: lint test ## update CHANGELOG and push all of the your development works
-	$(TOOL_DIR)/add-changelog.sh "$(NEW_TAG)"
+	$(TOOL_DIR)/add_changelog.sh "$(NEW_TAG)"
 	git checkout master
-	git merge --ff "$(LATEST_LOCAL_BRANCH)"
+	git merge --ff "$(LATEST_LOCAL_DEVEL_BRANCH)"
 	git push
-	$(TOOL_DIR)/add-release-tag.sh "$(NEW_TAG)"
+	$(TOOL_DIR)/add_release_tag.sh "$(NEW_TAG)"
 
 .PHONY: test
 test: ## go test
-	go test -v $(shell glide novendor)
+	go test -v -cover $(shell glide novendor)
 
 .PHONY: all-build
 all-build: lint test
-	$(TOOL_DIR)/build-static-bins.sh "$(ALL_OS)" "$(ALL_ARCH)" \
+	$(TOOL_DIR)/build_static_bins.sh "$(ALL_OS)" "$(ALL_ARCH)" \
 		"$(STATIC_FLAGS)" "$(LD_FLAGS)"                        \
 		"$(PKG_DEST_DIR)" "$(BINARY)"
 

@@ -6,6 +6,9 @@ set -o nounset -o errexit -o pipefail
 # Prevent commands misbehaving due to locale differences.
 export LC_ALL=C LANG=C
 
+# 注釈付きタグを作成してリモートに push する。
+# 注釈の内容は今回のリリース文の CHANGELOG の内容。
+
 NEW_TAG="$1"
 tag_list="$(git describe --always --dirty)"
 

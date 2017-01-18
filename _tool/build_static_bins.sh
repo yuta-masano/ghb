@@ -16,7 +16,7 @@ BINARY="$6"
 cnt=0
 for os in $ALL_OS; do
 	if [ "_$os" = '_windows' ]; then
-		app_name="${BINARY}.exe"
+		app_name="$BINARY.exe"
 	else
 		app_name="$BINARY"
 	fi

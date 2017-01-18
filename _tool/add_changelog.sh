@@ -7,8 +7,8 @@ set -o nounset -o errexit -o pipefail
 export LC_ALL=C LANG=C
 
 # trap for `mktemp`
-trap 'rm -f /tmp/tmp.*."${0##*/}"'         0        # EXIT
-trap 'rm -f /tmp/tmp.*."${0##*/}"; exit 1' 1 2 3 15 # HUP QUIT INT TERM
+trap 'rm -f /tmp/tmp.*."$(basename --suffix='.sh' "$0")"'         0        # EXIT
+trap 'rm -f /tmp/tmp.*."$(basename --suffix='.sh' "$0")"; exit 1' 1 2 3 15 # HUP QUIT INT TERM
 
 # 既存の CHANGELOG　の先頭に新しい変更履歴を挿入したいので、
 #   1. 空の一時ファイルに変更したい情報を記入。
@@ -16,16 +16,16 @@ trap 'rm -f /tmp/tmp.*."${0##*/}"; exit 1' 1 2 3 15 # HUP QUIT INT TERM
 #   3. 1. のファイルを CHANGELOG としてコピー。
 # という手法を取っている。
 
-#==============================================================================
+#===============================================================================
 #  新しい CHANGELOG を作成する
 #===============================================================================
 NEW_TAG="$1"
-current_tag="$(git describe --always --dirty)"
-current_changelog="$(git show origin/master:CHANGELOG)"
-commit_logs=$(git log "${current_tag%%-*}..."                                 \
-	--format='    * %s'                                                       \
-	--grep='([a-z]\+ #[0-9]\+'                                               |\
-	sed -e 's/\([^'$'\x01''-'$'\x7e'']\) \([^'$'\x01''-'$'\x7e'']\)/\1\2/g')
+from_tag="$(git describe --always --dirty)"
+
+commit_logs=$(git log "${from_tag%%-*}..."                                  \
+	--format='    * %s'                                                     \
+	--grep='([a-z]\+ #[0-9]\+'                                              \
+	| sed 's/\([^'$'\x01''-'$'\x7e'']\) \([^'$'\x01''-'$'\x7e'']\)/\1\2/g')
 	# 上の sed は、「全角 全角」となっている文字列から半角スペースを
 	# 取り除いている。
 	# 2 行以上のコミットログの件名を一行で表示すると、
@@ -33,13 +33,13 @@ commit_logs=$(git log "${current_tag%%-*}..."                                 \
 	# 以下を使った強引な方法。
 	# - bash の $'...' 表記を使って ASCII コード以外 = 半角文字以外を表現。
 	# - bash の文字列結合は単に文字列を隣接させるだけでよい。
-
 feature_logs="$(echo "$commit_logs"     | grep '(feature #'     || :)"
 bug_logs="$(echo "$commit_logs"         | grep '(bug #'         || :)"
 enhancement_logs="$(echo "$commit_logs" | grep '(enhancement #' || :)"
 misc_logs="$(echo "$commit_logs"        | grep '(misc #'        || :)"
 
-new_chengelog="$(mktemp --tmpdir=/tmp --suffix=".${0##*/}")"
+current_changelog="$(git show origin/master:CHANGELOG)"
+new_chengelog="$(mktemp --tmpdir=/tmp --suffix=".$(basename --suffix='.sh' "$0")")"
 {
 	echo '# Delete this line to accept this draft.'
 	echo "$NEW_TAG ($(date +'%F'))"
@@ -64,7 +64,7 @@ new_chengelog="$(mktemp --tmpdir=/tmp --suffix=".${0##*/}")"
 } > "$new_chengelog"
 
 #===============================================================================
-#  CHANGELOG が正しく編集されているかチェック
+#  エディタで CHANGELOG を編集
 #===============================================================================
 befor="$(md5sum "$new_chengelog")"
 vi "$new_chengelog" < $(tty) > $(tty)
@@ -85,15 +85,15 @@ fi
 cp --force "$new_chengelog" CHANGELOG
 git add CHANGELOG
 
-close_issues="$(echo $commit_logs                 |\
-	grep --only-matching -E '[a-z]+ #[0-9]+' || : |\
-	sed -e 's/[a-z]\+/close/'                     |\
-	uniq)"
+close_issues="$(echo "$commit_logs"            \
+	| grep --only-matching -E '[a-z]+ #[0-9]+' \
+	| sed 's/[a-z]\+/close/'                   \
+	| uniq || :)"
 
-commit_messages="$(mktemp --tmpdir=/tmp --suffix=".${0##*/}")"
+commit_messages="$(mktemp --tmpdir=/tmp --suffix=".$(basename --suffix='.sh' "$0")")"
 {
 	echo "Release $NEW_TAG"
-	if [ -n "$commit_messages"]; then
+	if [ -n "$close_issues" ]; then
 		echo
 		echo "$close_issues"
 	fi
