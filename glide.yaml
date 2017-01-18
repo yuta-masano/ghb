@@ -6,3 +6,5 @@ import:
 - package: golang.org/x/oauth2
 - package: github.com/tcnksm/go-gitconfig
   version: ^0.1.2
+- package: github.com/yuta-masano/go-tempedit
+  version: ^0.3.4
