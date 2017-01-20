@@ -73,7 +73,7 @@ func (g *gitHubClient) getIssueTemplate(repoName, path string) (string, error) {
 		if err != nil {
 			return "", err
 		}
-		return content, nil
+		return "\n" + content, nil
 	case http.StatusNotFound: // 404 = イシューテンプレートがない = 空文字を返せばよい。
 		return "", nil
 	default:
