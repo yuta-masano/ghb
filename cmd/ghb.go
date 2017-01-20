@@ -57,7 +57,12 @@ func (g *ghb) fPrintIssues(out io.Writer, repoName string) (*github.Response, er
 	}
 
 	for _, issue := range issues {
-		fmt.Fprintf(out, "#%d\t%s\n", *issue.Number, *issue.Title)
+		var lables []string
+		for _, l := range issue.Labels {
+			lables = append(lables, l.String())
+		}
+		fmt.Fprintf(out, "#%d\t%s\t{%s}\n",
+			*issue.Number, *issue.Title, strings.Join(lables, ", "))
 	}
 	return nil, nil
 }
