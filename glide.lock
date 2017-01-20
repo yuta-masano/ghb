@@ -1,5 +1,5 @@
 hash: 4cdc7c0bfb792838117fa730e13ed495f48f23290851ab8fba7eeb762c9db901
-updated: 2017-01-16T20:24:58.50291199+09:00
+updated: 2017-01-20T14:00:32.74557503+09:00
 imports:
 - name: github.com/fsnotify/fsnotify
   version: fd9ec7deca8bf46ecd2a795baaacf2b3a9be1197
@@ -53,7 +53,7 @@ imports:
 - name: github.com/tcnksm/go-gitconfig
   version: d154598bacbf4501c095a309753c5d4af66caa81
 - name: github.com/yuta-masano/go-tempedit
-  version: 159fde28d539ead13ad941fb7c03cbe96545a504
+  version: 857d4d9d216f31134050d1ed180c94654bc069f8
 - name: golang.org/x/net
   version: f2499483f923065a842d38eb4c7f1927e6fc6e6d
   subpackages:

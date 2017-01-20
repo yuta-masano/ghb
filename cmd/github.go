@@ -57,7 +57,7 @@ func (g *gitHubClient) issueLineFromEditor(repoName string) ([]string, error) {
 	if err = edit.Run(); err != nil {
 		return nil, err
 	}
-	if err = edit.FileChanged(); err != nil {
+	if changed, err := edit.FileChanged(); !changed {
 		return nil, err
 	}
 	return edit.Line(), nil
