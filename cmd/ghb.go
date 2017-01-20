@@ -36,7 +36,9 @@ func (g *ghb) createIssue(repoName string, labels []string) (*github.Issue, *git
 		issue.Title, issue.Body =
 			github.String(lines[0]), github.String(strings.Join(lines[1:], "\n"))
 	}
-	issue.Labels = &labels
+	if len(labels) > 0 {
+		issue.Labels = &labels
+	}
 	return g.c.createIssue(repoName, &issue)
 }
 
