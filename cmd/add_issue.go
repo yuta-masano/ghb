@@ -9,8 +9,9 @@ import (
 )
 
 var addIssueCmd = &cobra.Command{
-	Use:   "issue [REPO_NAME]",
-	Short: "add a new issue",
+	Aliases: []string{"i"},
+	Use:     "issue [REPO_NAME]",
+	Short:   "add a new issue",
 	Long: `add a new issue about specified repository allowing you to edit
 the issue subject and description via your editor.
 If REPO_NAME is omitted, ghb tries to read it from .git/config file.`,
