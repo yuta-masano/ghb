@@ -73,7 +73,8 @@ deps-install: setup ## install vendor packages based on glide.lock or glide.yaml
 
 .PHONY: install
 install:
-	go install vendor/...
+	test -e glide.yaml \
+		&& go install $(shell sed --quiet 's/^- package: /.\/vendor\//p' glide.yaml) || :
 	CGO_ENABLED=0 go install $(subst -a ,,$(STATIC_FLAGS)) -ldflags "$(LD_FLAGS)"
 
 .PHONY: lint
