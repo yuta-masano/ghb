@@ -65,16 +65,20 @@ func (g *gitHubClient) issueLineFromEditor(repoName string) ([]string, error) {
 }
 
 func (g *gitHubClient) getIssueTemplate(repoName, path string) (string, error) {
-	file, _, res, _ := g.Repositories.GetContents(cfg.gitHubOwner, repoName, path, nil)
-	if res.StatusCode == http.StatusNotFound {
-		// 404 = イシューテンプレートがない = 空文字を返せばよい。
+	file, _, res, err :=
+		g.Repositories.GetContents(cfg.gitHubOwner, repoName, path, nil)
+	switch res.StatusCode {
+	case http.StatusOK:
+		content, err := file.GetContent()
+		if err != nil {
+			return "", err
+		}
+		return content, nil
+	case http.StatusNotFound: // 404 = イシューテンプレートがない = 空文字を返せばよい。
 		return "", nil
-	}
-	content, err := file.GetContent()
-	if err != nil {
+	default:
 		return "", err
 	}
-	return content, nil
 }
 
 func (g *gitHubClient) getIssues(repoName string) ([]*github.Issue, *github.Response, error) {
