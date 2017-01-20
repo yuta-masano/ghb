@@ -11,7 +11,7 @@ import (
 var addRepositoryCmd = &cobra.Command{
 	Use:   "repository NAME",
 	Short: "create a new repository",
-	Long: `Create a new repository. Specify your repository name as NAME and
+	Long: `add a new repository. Specify your repository name as NAME and
 short description or homepage as each flags.`,
 	RunE: runAddRepository,
 }
