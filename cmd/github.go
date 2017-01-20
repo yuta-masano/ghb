@@ -16,6 +16,7 @@ type gitHubAPIDoer interface {
 	) (*github.Issue, *github.Response, error)
 	issueLineFromEditor(repoName string) ([]string, error)
 	getIssueTemplate(repoName, path string) (string, error)
+	getIssues(repoName string) ([]*github.Issue, *github.Response, error)
 }
 
 type gitHubClient struct {
@@ -74,4 +75,9 @@ func (g *gitHubClient) getIssueTemplate(repoName, path string) (string, error) {
 		return "", err
 	}
 	return content, nil
+}
+
+func (g *gitHubClient) getIssues(repoName string) ([]*github.Issue, *github.Response, error) {
+	// デフォルトでステータスが Open なものを拾ってくるので nil でよかろう。
+	return g.Issues.ListByRepo(cfg.gitHubOwner, repoName, nil)
 }

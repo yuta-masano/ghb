@@ -49,3 +49,15 @@ func (g *ghb) printGitClone(out io.Writer, repo *github.Repository) {
 func (g *ghb) printIssueNum(out io.Writer, issue *github.Issue) {
 	fmt.Fprintln(out, "Issue num:", strings.Trim(github.Stringify(issue.Number), `"`))
 }
+
+func (g *ghb) fPrintIssues(out io.Writer, repoName string) (*github.Response, error) {
+	issues, _, err := g.c.getIssues(repoName)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, issue := range issues {
+		fmt.Fprintf(out, "#%d\t%s\n", *issue.Number, *issue.Title)
+	}
+	return nil, nil
+}
