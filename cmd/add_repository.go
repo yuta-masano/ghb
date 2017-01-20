@@ -49,6 +49,6 @@ func runAddRepository(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	ghb.printGitClone(os.Stdout, addedRepo)
+	ghb.fPrintGitClone(os.Stdout, addedRepo)
 	return nil
 }

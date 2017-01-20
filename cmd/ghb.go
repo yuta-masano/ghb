@@ -42,12 +42,12 @@ func (g *ghb) createIssue(repoName string, labels []string) (*github.Issue, *git
 	return g.c.createIssue(repoName, &issue)
 }
 
-func (g *ghb) printGitClone(out io.Writer, repo *github.Repository) {
-	fmt.Fprintf(out, "git clone %s\n", strings.Trim(github.Stringify(repo.GitURL), `"`))
+func (g *ghb) fPrintGitClone(out io.Writer, repo *github.Repository) {
+	fmt.Fprintf(out, "git clone %s\n", *repo.GitURL)
 }
 
-func (g *ghb) printIssueNum(out io.Writer, issue *github.Issue) {
-	fmt.Fprintln(out, "Issue num:", strings.Trim(github.Stringify(issue.Number), `"`))
+func (g *ghb) fPrintIssueNum(out io.Writer, issue *github.Issue) {
+	fmt.Fprintf(out, "Issue num: %d\n", *issue.Number)
 }
 
 func (g *ghb) fPrintIssues(out io.Writer, repoName string) (*github.Response, error) {

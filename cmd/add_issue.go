@@ -48,6 +48,6 @@ func runAddIssue(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	ghb.printIssueNum(os.Stdout, addedIssue)
+	ghb.fPrintIssueNum(os.Stdout, addedIssue)
 	return nil
 }
