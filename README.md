@@ -46,7 +46,18 @@ $ ghb add issue test-repo -l bug
 
 The MIT License (MIT)
 
-## Thanks to
+## Thanks
+
+ghb uses the following packages. These packages are licensed under their license.
+
+* github.com/google/go-github
+* github.com/mattn/go-runewidth
+* github.com/olekukonko/tablewriter
+* github.com/spf13/cobra
+* github.com/spf13/viper
+* github.com/tcnksm/go-gitconfig
+* github.com/yuta-masano/go-tempedit
+* golang.org/x/oauth2
 
 ## Author
 

@@ -8,7 +8,6 @@ import (
 	"golang.org/x/oauth2"
 )
 
-// interface のメソッドシグニチャって引数名書いても OK なのか。
 type gitHubAPIDoer interface {
 	createRepo(org string, repo *github.Repository,
 	) (*github.Repository, *github.Response, error)
@@ -27,7 +26,10 @@ func newGitHubClient() gitHubAPIDoer {
 	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: cfg.gitHubToken})
 	tc := oauth2.NewClient(oauth2.NoContext, ts)
 	cl := github.NewClient(tc)
-	// 構造体を無名で埋め込んだら *github.<Client> をフィールドにして代入するようだ。
+	// type gitHubClient struct {
+	//     	github.Client
+	//             ~~~~~~
+	// }
 	return &gitHubClient{Client: cl}
 }
 
@@ -69,9 +71,9 @@ func (g *gitHubClient) getIssueTemplate(repoName, path string) (string, error) {
 		g.Repositories.GetContents(cfg.gitHubOwner, repoName, path, nil)
 	switch res.StatusCode {
 	case http.StatusOK:
-		content, err := file.GetContent()
+		content, e1 := file.GetContent()
 		if err != nil {
-			return "", err
+			return "", e1
 		}
 		return "\n" + content, nil
 	case http.StatusNotFound: // 404 = イシューテンプレートがない = 空文字を返せばよい。

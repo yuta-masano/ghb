@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"errors"
-	"os"
+	"fmt"
 
 	"github.com/spf13/cobra"
 	"github.com/tcnksm/go-gitconfig"
@@ -12,7 +12,7 @@ var addIssueCmd = &cobra.Command{
 	Aliases: []string{"i"},
 	Use:     "issue [REPO_NAME]",
 	Short:   "add a new issue",
-	Long: `add a new issue about specified repository allowing you to edit
+	Long: `Add a new issue about specified repository allowing you to edit
 the issue subject and description via your editor.
 If REPO_NAME is omitted, ghb tries to read it from .git/config file.`,
 	RunE: runAddIssue,
@@ -48,6 +48,6 @@ func runAddIssue(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	ghb.fPrintIssueNum(os.Stdout, addedIssue)
+	fmt.Printf("Issue #%d created\n", *addedIssue.Number)
 	return nil
 }

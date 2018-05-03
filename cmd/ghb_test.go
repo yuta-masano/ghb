@@ -8,7 +8,6 @@ import (
 
 type fakeGitHub struct {
 	gitHubAPIDoer
-	// 関数型のメソッドシグニチャも引数名書いて OK なのか。
 	fakeCreateRepo  func(org string, repo *github.Repository) (*github.Repository, *github.Response, error)
 	fakeCreateIssue func(repoName string, issue *github.IssueRequest) (*github.Issue, *github.Response, error)
 }

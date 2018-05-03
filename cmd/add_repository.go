@@ -2,7 +2,7 @@ package cmd
 
 import (
 	"errors"
-	"os"
+	"fmt"
 
 	"github.com/google/go-github/github"
 	"github.com/spf13/cobra"
@@ -12,7 +12,7 @@ var addRepositoryCmd = &cobra.Command{
 	Aliases: []string{"r", "repo"},
 	Use:     "repository NAME",
 	Short:   "add a new repository",
-	Long: `add a new repository. Specify your repository name as NAME and
+	Long: `Add a new repository. Specify your repository name as NAME and
 short description or homepage as each flags.`,
 	RunE: runAddRepository,
 }
@@ -49,6 +49,6 @@ func runAddRepository(cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	ghb.fPrintGitClone(os.Stdout, addedRepo)
+	fmt.Printf("git clone %s\n", *addedRepo.SSHURL)
 	return nil
 }

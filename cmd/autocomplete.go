@@ -31,7 +31,7 @@ or just source them in directly:
 
 	RunE: func(cmd *cobra.Command, args []string) error {
 		if autocompleteType != "bash" {
-			return errors.New("Only Bash is supported for now")
+			return errors.New("only Bash is supported")
 		}
 
 		err := cmd.Root().GenBashCompletionFile(autocompleteTarget)

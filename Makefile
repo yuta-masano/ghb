@@ -54,8 +54,8 @@ help: ## show help
 	@echo 'USAGE: make [target]'
 	@echo
 	@echo 'TARGETS:'
-	@grep -E '^[-_: a-zA-Z0-9]+##' $(MAKEFILE_LIST) \
-		| sed 's/:[-_ a-zA-Z0-9]\+/:/'              \
+	@grep -E '^[^#]+##' $(MAKEFILE_LIST) \
+		| sed 's/:[^#]\+/:/'             \
 		| column -t -s ':#'
 
 # install development tools
@@ -114,3 +114,11 @@ release: all-build all-archive ## build binaries for all platforms and upload th
 clean: ## uninstall the binary and remove $(RELEASE_DIR) directory
 	go clean -i .
 	rm -rf $(RELEASE_DIR)
+
+.PHONY: thanks
+thanks:
+ifneq ($(wildcard glide.yaml),)
+	@sed -n 's/^- package: /* /p' glide.yaml | sort
+else
+	@echo 'There is no thirdparty package.'
+endif
